@@ -1,5 +1,3 @@
 from app import create
+from app.db import User
 app = create()
-@app.route('/')
-def autors():
-	return 'hello'
