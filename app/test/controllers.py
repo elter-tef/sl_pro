@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template
+from ..db import db, User
+module = Blueprint('test', __name__, url_prefix='/test')
 
-module = Blueprint('public', __name__, url_prefix='/public')
 
-
-@module.route('/low')
+@module.route('/')
 def index():
-    return 'hello'
+    u = User()
+    db.session.add(u)
+    db.session.commit()
+    return 'hello {}'.format(u.id)
