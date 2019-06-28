@@ -4,6 +4,12 @@ class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	login =  db.Column(db.Text, nullable=False)
-	#User_Character = db.relationship('UserCharacter', back_populates='user', lazy='dynamic')
+	addresses = db.relationship('Address', backref='user',
+								lazy='dynamic')
 
 
+class Address(db.Model):
+	__tablename__ = 'address'
+	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+	email = db.Column(db.String(50))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
