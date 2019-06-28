@@ -19,4 +19,7 @@ def index():
     db.session.commit()
     #r = User.query.filter_by(login='Ben').first()
     r = Address.query.filter_by(user_id=User.query.filter_by(login='Ben').first().id).all()
-    return 'hello {}'.format(r)
+    s = []
+    for i in r:
+        s.append(i.email)
+    return 'hello {}'.format(s)
