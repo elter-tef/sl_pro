@@ -34,7 +34,7 @@ def index():
     db.session.commit()
     #r = User.query.filter_by(login='Ben').first()
     user = 'Ben'
-    r = ItemUser.query.filter_by(user_id=User.query.filter_by(login=user).first().id).all()
+    r = User.query.filter_by(login=user).first().items_user
     items = []
     for i in r:
         items.append(Item.query.get(i.item_id).name)
