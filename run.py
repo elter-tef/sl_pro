@@ -1,2 +1,12 @@
 from app import create
-app = create()
+from flask_script import Manager
+
+
+def main():
+    app = create()
+    manager = Manager(app)
+    manager.run()
+
+
+if __name__ == '__main__':
+    main()
