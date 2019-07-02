@@ -8,7 +8,7 @@ def index():
     u = User(login='Ben')
     db.session.add(u)
     db.session.commit()
-    u = User.query.filter_by(login='Ben').first()
+    u = User.query.filter(login='Ben')
     u.address_tb = [Address(email = 'qwerty')]
     db.session.add(u)
     db.session.commit()
