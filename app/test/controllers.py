@@ -20,8 +20,9 @@ def index():
     u = Item(name='sand')
     db.session.add(u)
     db.session.commit()
-    u = ItemUser(user_id=User.query.filter_by(login='Ben').first().id,
-                 item_id = Item.query.filter_by(name='wood').first().id)
+    u = User.query.filter_by(login='Ben').first().items_user(item_id = Item.query.filter_by(name='wood').first().id)
+    #u = ItemUser(user_id=User.query.filter_by(login='Ben').first().id,
+     #            item_id = Item.query.filter_by(name='wood').first().id)
     db.session.add(u)
     db.session.commit()
     u = ItemUser(user_id=User.query.filter_by(login='Ben').first().id,
@@ -34,7 +35,7 @@ def index():
     db.session.commit()
     #r = User.query.filter_by(login='Ben').first()
     user = 'Ben'
-    r = ItemUser.query.filter_by(user_id=User.query.filter_by(login=user).first().id).all()
+    r = User.query.filter_by(login=user).first().items_user
     items = []
     for i in r:
         items.append(Item.query.get(i.item_id).name)
