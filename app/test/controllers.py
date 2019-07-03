@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+from flask import request, jsonify
 from ..db import db, User, Item, ItemUser, Address
 module = Blueprint('test', __name__, url_prefix='/test')
 
@@ -17,6 +18,13 @@ def index():
     for i in u:
         s.append(i.email)
     return 'User {} has {}'.format(1, s)
+
+
+@module.route('/b')
+def bbb():
+    f = request.get_json
+    return jsonify(f)
+
 
 @module.route('/a')
 def aaa():
@@ -45,8 +53,10 @@ def aaa():
     db.session.commit()
     #r = User.query.filter_by(login='Ben').first()
     user = 'Ben'
-    g = User.query.filter(User.login == 'Ben').first().items_user.filter(Item.name == 'glass').first()
-    r = User.query.filter(User.login == user).first().items_user
+    g = User.query.filter(User.login == 'Ben').first().items_tb.filter(Item.name == 'sand').first()
+    db.session.add(g)
+    db.session.commit()
+    r = User.query.filter(User.login == user).first().items_tb
     items = []
     for i in r:
         items.append(Item.query.get(i.item_id).name)
