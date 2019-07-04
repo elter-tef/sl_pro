@@ -1,7 +1,7 @@
 from flask import Flask
 from config import Config
 from .db import db
-from .degrade import degrade
+from .func import degrade
 def create():
 	app = Flask(__name__)
 	app.config.from_object(Config)

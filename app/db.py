@@ -5,7 +5,7 @@ class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	login =  db.Column(db.Text, nullable=False)
-	character = db.relationship('Character', backref='user',
+	character_tb = db.relationship('Character', backref='user',
 								lazy='dynamic')
 
 
@@ -41,7 +41,7 @@ class Information(db.Model):
 	tags_semantic_tb = db.relationship('InformationTags_semantic', backref='information', lazy='dynamic')
 
 class InformationItem(db.Model):
-	__tablename__ = 'information_character'
+	__tablename__ = 'information_item'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	character_id = db.Column(db.Integer, db.ForeignKey('information.id'))
 	item_id = db.Column(db.Integer, db.ForeignKey('item.id'))

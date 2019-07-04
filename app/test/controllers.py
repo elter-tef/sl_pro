@@ -1,8 +1,19 @@
 from flask import Blueprint, render_template
 from ..db import db, User, Tags_semantic, OrderTags_semantic, Messages, Character
-
+from ..func import js_dict
+from flask import request, jsonify
+import json
 module = Blueprint('test', __name__, url_prefix='/test')
 
+@module.route('/json_out')
+def json_out():
+    u = User.query.filter(User.login == 'Ben').first()
+    return ' -- {}'.format(js_dict(u))
+
+@module.route('/json_in')
+def json_in():
+    g = request.get_json()
+    return str(g)
 @module.route('/')
 def index():
     u = User(login = 'Ben')
