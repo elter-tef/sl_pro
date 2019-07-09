@@ -29,3 +29,12 @@ class UserCharacter(db.Model):
 	#table_character = db.relationship('Department', lazy='joined')
 
 User_Character = db.relationship('UserCharacter', back_populates='user', lazy='dynamic')
+
+class LocationRoomCharacter(db.Model):
+	__tablename__ = 'locationroomcharacter'
+	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+	roomcharacters_tb = db.Column(db.Integer, db.ForeignKey('roomcharacter.id'))
+	location = db.Column(db.Text, nullable=False)
+	reality = db.Column(db.Text, nullable=False)
+	unique_reality = db.Column(db.Text, nullable=False, default='')
+	datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

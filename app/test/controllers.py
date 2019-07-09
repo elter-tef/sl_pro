@@ -1,16 +1,30 @@
-from flask import Blueprint, render_template
-from ..db import db, User, Tags_semantic, OrderTags_semantic, Messages, Character
+from flask import Blueprint, render_template, g, session
+from ..db import db, User, Tags_semantic, OrderTags_semantic, Messages, Character, Game, Knowledge
 from ..func import js_dict
 from flask import request, jsonify
 import json
 module = Blueprint('test', __name__, url_prefix='/test')
+
+@module.route('/one')
+def one():
+    u = Character(name = 'Ben')
+    m = Messages( text = 'asd', character_id = u)
+    return 'ok'
+
+@module.route('/two')
+def two():
+    u = User.query.all()
+    s = []
+    for i in u:
+        s.append(str(i.login) + ' ' +str(i.id))
+    return '{}'.format(s)
 
 @module.route('/json_out')
 def json_out():
     u = User.query.filter(User.login == 'Ben').first()
     return ' -- {}'.format(js_dict(u))
 
-@module.route('/json_in')
+@module.route('/json_in', methods=['GET', 'POST'])
 def json_in():
     g = request.get_json()
     return str(g)
@@ -30,6 +44,19 @@ def index():
     #db.session.commit()
 
 
+@module.route('/game')
+def game():
+    g = Game(name = 'first')
+    k = Knowledge(concept = 'a', text = 'b')
+    db.session.add(g)
+    db.session.add(k)
+    db.session.commit()
+    k2 = Knowledge(concept='a', text='n', game_id = Game.query.filter(Game.name == 'first').first().id)
+    db.session.add(k2)
+    db.session.commit()
+    #
+    return 'as {}'.format( Knowledge.query.filter(Knowledge.game_id == 1).first().text  )
+
 @module.route('/tag')
 def tag():
     u = Tags_semantic( tag = 'sql')
@@ -41,8 +68,9 @@ def tag():
     u = Tags_semantic( tag = 'ослик')
     db.session.add(u)
     db.session.commit()
-    u = OrderTags_semantic(first_tag_id = Tags_semantic.query.filter_by(tag = 'sql').first().id,
-                         last_tag_id = Tags_semantic.query.filter_by(tag = 'horse').first().id)
+    u = OrderTags_semantic(first_tag = Tags_semantic.query.filter_by(tag = 'sql').first(),
+                         last_tag = Tags_semantic.query.filter_by(tag = 'horse').first())
+
     db.session.add(u)
     db.session.commit()
     u = OrderTags_semantic(first_tag_id=Tags_semantic.query.filter_by(tag='sql').first().id,
