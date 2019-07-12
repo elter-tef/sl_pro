@@ -6,15 +6,18 @@ class World(db.Model):
 	__tablename__ = 'world'
 	id = db.Column(db.Text, primary_key=True)
 	game_tb = db.relationship('Game', backref='world', lazy='dynamic')
+	knowledge_tb = db.relationship('Knowledge', backref='world', lazy='dynamic')
+
 class Game(db.Model):
 	__tablename__ = 'game'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	word = db.Column(db.Text, db.ForeignKey('world.id'))
+	world_id = db.Column(db.Text, db.ForeignKey('world.id'))
 	name = db.Column(db.Text, nullable=False)
 	character_tb = db.relationship('Character', backref='game', lazy='dynamic')
 	room_tb = db.relationship('Room', backref='game', lazy='dynamic')
 	item_tb = db.relationship('Item', backref='game', lazy='dynamic')
 	knowledge_tb = db.relationship('Knowledge', backref='game', lazy='dynamic')
+
 
 class User(UserMixin, db.Model):
 	__tablename__ = 'user'
@@ -22,9 +25,7 @@ class User(UserMixin, db.Model):
 	admin = db.Column(db.Boolean, default=False)
 	login =  db.Column(db.Text, nullable=False)
 	password_hash = db.Column(db.Text, nullable=False)
-	user_active = db.Column(db.Integer, db.ForeignKey('character.id'))
 	character_tb = db.relationship('Character', backref='user', foreign_keys = 'Character.user_id', lazy='dynamic')
-
 
 
 class Character(db.Model):
@@ -35,7 +36,6 @@ class Character(db.Model):
 	quenta_id = db.Column(db.Integer, db.ForeignKey('knowledge.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	game_tb = db.relationship('Game', lazy='joined')
-	user_active_tb = db.relationship('User', backref='character', foreign_keys = 'User.user_active', lazy='dynamic')
 	item_tb = db.relationship('ItemCharacter', backref='character',lazy='dynamic')
 	knowledges_tb = db.relationship('KnowledgeCharacter', backref='character', lazy='dynamic')
 	room_tb = db.relationship('RoomCharacter', backref='character', lazy='dynamic')
@@ -45,28 +45,24 @@ class Character(db.Model):
 class Item(db.Model):
 	__tablename__ = 'item'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+	game_id =  db.Column(db.Integer, db.ForeignKey('game.id'))
+	knowledge_id = db.Column(db.Integer, db.ForeignKey('knowledge.id'))
 	name = db.Column(db.Text, nullable=False)
 	characters_tb = db.relationship('ItemCharacter', backref='item', lazy='dynamic')
-	knowledges_tb = db.relationship('KnowledgeItem', backref='item', lazy='dynamic')
+
 
 
 class Knowledge(db.Model):
 	__tablename__ = 'knowledge'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	game_id = db.Column(db.Integer, db.ForeignKey('game.id'), default=0)
+	world_id = db.Column(db.Text, db.ForeignKey('world.id'))
 	concept = db.Column(db.Text, nullable=False)
 	text = db.Column(db.Text, nullable=False)
 	characters_tb = db.relationship('KnowledgeCharacter', backref='knowledges', lazy='dynamic')
-	items_tb = db.relationship('KnowledgeItem', backref='knowledges', lazy='dynamic')
+	items_tb = db.relationship('Item', backref='knowledges', lazy='dynamic')
 	tags_master_tb = db.relationship('KnowledgeTags_master', backref='knowledge', lazy='dynamic')
 	tags_semantic_tb = db.relationship('KnowledgeTags_semantic', backref='knowledge', lazy='dynamic')
-
-class KnowledgeItem(db.Model):
-	__tablename__ = 'knowledge_item'
-	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	character_id = db.Column(db.Integer, db.ForeignKey('knowledge.id'))
-	item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
 
 
 class KnowledgeCharacter(db.Model):
@@ -138,7 +134,7 @@ class Room(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
 	name = db.Column(db.Text, nullable=False)
-	location = db.Column(db.Text, nullable=False)
+	description = db.Column(db.Text, nullable=False)
 	messages_tb = db.relationship('Messages', backref='room', lazy='dynamic')
 	characters_tb = db.relationship('RoomCharacter', backref='room', lazy='dynamic')
 
@@ -146,7 +142,8 @@ class Room(db.Model):
 class RoomCharacter(db.Model):
 	__tablename__ = 'roomcharacter'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	nvdm = db.Column(db.Boolean, default=False)
+	nvdm = db.Column(db.Boolean)
+	status = db.Column(db.Text, nullable=False)
 	room_id = db.Column(db.Integer, db.ForeignKey('room.id'))
 	character_id = db.Column(db.Integer, db.ForeignKey('character.id'))
 	#locations_tb = db.relationship('LocationRoomCharacter', backref='roomcharacter', lazy='dynamic')
@@ -159,6 +156,6 @@ class Messages(db.Model):
 	tablename__ = 'messages'
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	text = db.Column(db.Text, nullable=False)
-	rooms_id = db.Column(db.Integer, db.ForeignKey('room.id'))
+	room_id = db.Column(db.Integer, db.ForeignKey('room.id'))
 	character_id = db.Column(db.Integer, db.ForeignKey('character.id'))
 	datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

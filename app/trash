@@ -38,3 +38,13 @@ class LocationRoomCharacter(db.Model):
 	reality = db.Column(db.Text, nullable=False)
 	unique_reality = db.Column(db.Text, nullable=False, default='')
 	datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+[Tags_semantic.query.get(i.tag_id).tag for i in k.tags_semantic_tb.all()]
+
+
+class KnowledgeItem(db.Model):
+	__tablename__ = 'knowledge_item'
+	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+	character_id = db.Column(db.Integer, db.ForeignKey('knowledge.id'))
+	item_id = db.Column(db.Integer, db.ForeignKey('item.id'))

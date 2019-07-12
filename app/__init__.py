@@ -17,4 +17,16 @@ def create():
 	app.register_blueprint(create.module)
 	import app.login as login
 	app.register_blueprint(login.module)
+	import app.index as index
+	app.register_blueprint(index.module)
+	import app.get as get
+	app.register_blueprint(get.module)
+	import app.add as add
+	app.register_blueprint(add.module)
+	import app.change as change
+	app.register_blueprint(change.module)
+	import app.remove as remove
+	app.register_blueprint(remove.module)
+	import app.post as post
+	app.register_blueprint(post.module)
 	return app

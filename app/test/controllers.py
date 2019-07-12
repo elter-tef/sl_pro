@@ -1,15 +1,15 @@
 from flask import Blueprint, render_template, g, session
-from ..db import db, User, Tags_semantic, OrderTags_semantic, Messages, Character, Game, Knowledge
+from ..db import db, User, Tags_semantic, OrderTags_semantic, Messages, Character, Game, Knowledge, RoomCharacter
 from ..func import js_dict
 from flask import request, jsonify
+from flask_login import   current_user
 import json
 module = Blueprint('test', __name__, url_prefix='/test')
 
 @module.route('/one')
 def one():
-    u = Character(name = 'Ben')
-    m = Messages( text = 'asd', character_id = u)
-    return 'ok'
+    s = ['{} {} {}'.format(i.character_id, i.room_id, i.status) for i in RoomCharacter.query.all()]
+    return '{}'.format(s)
 
 @module.route('/two')
 def two():
